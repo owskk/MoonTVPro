@@ -1,0 +1,80 @@
+# --------------------------------------------------------------------------
+# 工作流名称
+# 这个名字会显示在你的 GitHub 仓库的 "Actions" 选项卡中。
+# --------------------------------------------------------------------------
+name: Fetch Remote Config File
+
+# --------------------------------------------------------------------------
+# 触发工作流的事件
+# 这里定义了什么情况下会自动运行这个工作流。
+# --------------------------------------------------------------------------
+on:
+  # 1. 手动触发:
+  #    允许你随时进入 GitHub 的 Actions 页面，手动点击按钮来运行此工作流。
+  workflow_dispatch:
+
+  # 2. 定时触发:
+  #    使用 cron 语法来设置一个定时任务。
+  schedule:
+    #    - cron: "分钟 小时 日 月 星期"
+    #      下面的 "0 16 * * *" 表示在每天的 UTC 时间 16:00 运行。
+    #      (这对应北京时间第二天的凌晨 00:00)
+    - cron: "0 16 * * *"
+
+# --------------------------------------------------------------------------
+# 工作流任务
+# 一个工作流可以包含一个或多个任务（job）。这些任务可以并行或串行运行。
+# --------------------------------------------------------------------------
+jobs:
+  # 定义一个名为 "fetch-config" 的任务。这是此工作流中唯一的任务。
+  fetch-config:
+    # 指定运行此任务的虚拟机环境。
+    # 'ubuntu-latest' 表示使用最新稳定版的 Ubuntu 系统。
+    runs-on: ubuntu-latest
+
+    # ----------------------------------------------------------------------
+    # 任务步骤
+    # 定义了在这个任务中需要按顺序执行的一系列命令或操作。
+    # ----------------------------------------------------------------------
+    steps:
+      # 步骤 1: 检出仓库代码
+      # 'uses: actions/checkout@v4' 是一个官方的 action。
+      # 它的作用是把你的仓库代码下载到虚拟机里，这样后续的步骤才能访问和修改仓库中的文件。
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 步骤 2: 下载远程配置文件
+      # 使用 curl 命令从指定的 URL 下载文件。
+      # '-o config.json' 参数告诉 curl 将下载的内容输出/保存到名为 'config.json' 的文件中。
+      # 如果文件已存在，此操作会覆盖它。
+      - name: Fetch the config file from URL
+        run: curl -o config.json https://raw.githubusercontent.com/hafrey1/LunaTV-config/main/LunaTV-config.json
+
+      # 步骤 3: 提交并推送文件更改
+      # 这一步是关键，它会检查文件是否有实际变化，只有在有变化时才会执行提交操作。
+      - name: Commit and push if changed
+        run: |
+          # --- Git 准备工作 ---
+          # 配置 Git 的用户名和邮箱，这样提交记录才能知道是谁提交的。
+          # 这里我们使用 GitHub Actions 机器人的默认身份。
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+          # --- 检查文件变更 ---
+          # 将 'config.json' 文件的所有更改添加到 Git 的暂存区。
+          git add config.json
+
+          # 检查暂存区是否有文件变动。
+          # 'git diff --staged --quiet' 命令如果发现有变动，会返回一个非零的退出码，从而执行 if 里的命令。
+          # 如果文件内容和上次提交完全一样，则什么都不做，直接执行 else 部分。
+          if ! git diff --staged --quiet; then
+            # --- 执行提交和推送 ---
+            echo "File has changed. Committing and pushing..."
+            # 创建一个新的提交，提交信息为 "Update config.json from remote URL"。
+            git commit -m "Update config.json from remote URL"
+            # 将新的提交推送到你的 GitHub 仓库。
+            git push
+          else
+            # --- 无需操作 ---
+            echo "No changes detected in config.json. Nothing to commit."
+          fi
