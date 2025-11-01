@@ -16,11 +16,6 @@
       "api": "https://tyyszy.com/api.php/provide/vod",
       "detail": "https://tyyszy.com"
     },
-    "ckzy.me": {
-      "name": "🎬CK资源",
-      "api": "https://ckzy.me/api.php/provide/vod",
-      "detail": "https://ckzy.me"
-    },
     "maotaizy": {
       "name": "🎬茅台资源",
       "api": "https://caiji.maotaizy.cc/api.php/provide/vod",
@@ -85,11 +80,6 @@
       "name": "🎬魔都资源",
       "api": "https://www.mdzyapi.com/api.php/provide/vod",
       "detail": "https://www.moduzy.net"
-    },
-    "mozhuazy": {
-      "name": "🎬魔爪资源",
-      "api": "https://jjpz.hafrey.dpdns.org/?url=https://mozhuazy.com/api.php/provide/vod",
-      "detail": "https://mozhuazy.com"
     },
     "ffzy1": {
       "name": "🎬非凡资源",
@@ -163,7 +153,7 @@
     },
     "hhzyapi": {
       "name": "🎬豪华资源",
-      "api": "https://hhzyapi.com/api.php/provide/vod",
+      "api": "https://jjpz.hafrey.dpdns.org/?url=https://hhzyapi.com/api.php/provide/vod",
       "detail": "https://www.haohuazy.com"
     },
     "subocaiji": {
@@ -235,6 +225,11 @@
       "name": "🔞91麻豆",
       "api": "https://91md.me/api.php/provide/vod",
       "detail": "https://91md.me"
+    },
+    "ckzy.me": {
+      "name": "🔞CK资源",
+      "api": "https://ckzy.me/api.php/provide/vod",
+      "detail": "https://ckzy.me"
     },
     "lbapiby": {
       "name": "🔞AIvin",
